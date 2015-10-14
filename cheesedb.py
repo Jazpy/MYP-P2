@@ -1,5 +1,22 @@
 import sqlite3
 
+def create_db(db):
+	cursor = db.cursor()
+	cursor.execute('''
+		CREATE TABLE cheeses(id INTEGER PRIMARY KEY, name TEXT,
+			country TEXT, recipes TEXT)
+		''')
+	cursor.execute('''
+		CREATE TABLE countries(id INTEGER PRIMARY KEY, name TEXT,
+			cheeses TEXT)
+		''')
+	cursor.execute('''
+		CREATE TABLE recipes(id INTEGER PRIMARY KEY, name TEXT,
+			cheese TEXT, instructions TEXT)
+		''')
+	db.commit();
+
+
 def db_exists(filename):
 	from os.path import isfile, getsize
 
@@ -34,24 +51,11 @@ def del_recipe_row():
 
 if db_exists('db/database'):
 	db = sqlite3.connect('db/database')
-
 	cursor = db.cursor
 else:
-	db = sqlite3.connect("db/database");
+	db = sqlite3.connect("db/database")
+	create_db(db)
+	cursor = db.cursor
 
-	cursor = db.cursor()
-	cursor.execute('''
-		CREATE TABLE cheeses(id INTEGER PRIMARY KEY, name TEXT,
-			country TEXT, recipes TEXT)
-		''')
-	cursor.execute('''
-		CREATE TABLE countries(id INTEGER PRIMARY KEY, name TEXT,
-			cheeses TEXT)
-		''')
-	cursor.execute('''
-		CREATE TABLE recipes(id INTEGER PRIMARY KEY, name TEXT,
-			cheese TEXT, instructions TEXT)
-		''')
-	db.commit();
-
+	
 db.close;
