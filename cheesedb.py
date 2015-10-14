@@ -13,14 +13,24 @@ def db_exists(filename):
 
 	return header[:16] == 'SQLite format 3\x00'
 
-def add_table():
+def add_cheese_row():
 	return 
 
-def add_row():
+def del_cheese_row():
 	return 
 
-def del_row():
+def add_country_row():
 	return 
+
+def del_country_row():
+	return 
+
+def add_recipe_row():
+	return 
+
+def del_recipe_row():
+	return 
+
 
 if db_exists('db/database'):
 	db = sqlite3.connect('db/database')
