@@ -30,24 +30,28 @@ def db_exists(filename):
 
 	return header[:16] == 'SQLite format 3\x00'
 
-def add_cheese_row():
+def add_cheese_row(db, name, country, recipes):
 	return 
 
-def del_cheese_row():
+def del_cheese_row(db, cheese_to_del):
+	cursor = db.cursor
+	
+	cursor.execute("delete from cheeses where name = " +
+		str(cheese_to_del))
+
+def add_country_row(db, country, cheeses):
 	return 
 
-def add_country_row():
+def del_country_row(db, country_to_del):
+	cursor.execute("delete from countries where name = " +
+		str(country_to_del))
+
+def add_recipe_row(db, name, cheese, instructions):
 	return 
 
-def del_country_row():
-	return 
-
-def add_recipe_row():
-	return 
-
-def del_recipe_row():
-	return 
-
+def del_recipe_row(db, recipe_to_del):
+	cursor.execute("delete from recipes where name = " +
+		str(recipe_to_del))
 
 if db_exists('db/database'):
 	db = sqlite3.connect('db/database')
