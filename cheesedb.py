@@ -11,6 +11,16 @@ def create_db(db):
 	cursor.execute('CREATE TABLE cheese_recipes(chid INT, reid INT)')
 	db.commit();
 
+def row_exists(db, name, table):
+	cursor = db.cursor()
+	cursor.execute("select rowid from %s where name = ?" %(str(table)), (str(name),))
+
+	exist = cursor.fetchone()
+	
+	if exist is None:
+		return False
+
+	return True
 
 def db_exists(filename):
 	from os.path import isfile, getsize
@@ -28,17 +38,36 @@ def db_exists(filename):
 def connect_cheese_country(cheese, country):
 	cursor = db.cursor()
 
+	cursor.execute("select * from cheese_country where chid = ? and coid = ?",
+		(str(cheese.get_id()), str(country.get_id())))
+
+	if cursor.fetchone() is not None:
+		return
+
 	cursor.execute('insert into cheese_country values (? ,?)',
 		(cheese.get_id(), country.get_id()))
 
 def connect_cheese_recipe(cheese, recipe):
 	cursor = db.cursor()
 
+	cursor.execute("select * from cheese_recipes where chid = ? and reid = ?",
+		(str(cheese.get_id()), str(recipe.get_id())))
+
+	if cursor.fetchone() is not None:
+		return
+
 	cursor.execute('insert into cheese_recipes values (? ,?)',
 		(cheese.get_id(), recipe.get_id()))
 
 def add_cheese_row(db, cheese):
 	cursor = db.cursor()
+	
+	if row_exists(db, cheese.get_name(), "cheeses") is True:
+		cursor.execute("select rowid from cheeses where name = ?", (str(cheese.get_name()),))
+		cheese.set_id(cursor.fetchone()[0])
+
+		return
+
 
 	#first we add to cheese table
 	cursor.execute('insert into cheeses values (?, ?)',
@@ -61,6 +90,12 @@ def del_cheese_row(db, cheese_to_del):
 
 def add_country_row(db, country):
 	cursor = db.cursor()
+	
+	if row_exists(db, country.get_name(), "countries") is True:
+		cursor.execute("select rowid from countries where name = ?", (str(country.get_name()),))
+		country.set_id(cursor.fetchone()[0])
+
+		return
 
 	#first we add to country table
 	cursor.execute('insert into countries values (?)',
@@ -79,6 +114,12 @@ def del_country_row(db, country_to_del):
 
 def add_recipe_row(db, recipe):
 	cursor = db.cursor()
+	
+	if row_exists(db, recipe.get_name(), "recipes") is True:
+		cursor.execute("select rowid from recipes where name = ?", (str(recipe.get_name()),))
+		recipe.set_id(cursor.fetchone()[0])
+
+		return
 
 	#first we add to recipe table
 	cursor.execute('insert into recipes values (?, ?, ?)',
@@ -96,6 +137,67 @@ def del_recipe_row(db, recipe_to_del):
 
 	cursor.execute("delete from cheese_recipes where reid = ?",
 		(recipe_to_del.get_id(),))
+
+def search_by_country(db, name):
+	cursor = db.cursor()
+	
+	cursor.execute("select rowid from countries where name = ?", (str(name),))
+	desired_id = cursor.fetchone()[0]
+
+	cursor.execute("select chid from cheese_country where coid = ?", (str(desired_id),))
+	rows = cursor.fetchall()
+
+	print desired_id
+	for row in rows:
+		cursor.execute("select name,softness from cheeses where rowid = ?", (str(row[0]),))
+		selected_cheeses = cursor.fetchall()
+
+		for c in selected_cheeses:
+			print c[0], c[1]
+
+def search_by_recipe(db, name):
+	cursor = db.cursor()
+	
+	cursor.execute("select rowid from recipes where name = ?", (str(name),))
+	desired_id = cursor.fetchone()[0]
+
+	cursor.execute("select chid from cheese_recipes where reid = ?", (str(desired_id),))
+	rows = cursor.fetchall()
+
+	print desired_id
+	for row in rows:
+		cursor.execute("select name,softness from cheeses where rowid = ?", (str(row[0]),))
+		selected_cheeses = cursor.fetchall()
+
+		for c in selected_cheeses:
+			print c[0], c[1]
+
+def search_by_softness(db, softness):
+	cursor = db.cursor()
+	to_print = "cheese: "
+	
+	cursor.execute("select rowid from cheeses where softness = ?", (str(softness),))
+	desired_ids = cursor.fetchall()
+
+	for cid in desired_ids:
+	
+		cursor.execute("select name from cheeses where rowid = ?", (str(cid[0]),))
+		to_print += cursor.fetchone()[0]
+
+		cursor.execute("select coid from cheese_country where chid = ?", (str(cid[0]),))
+		country_id = cursor.fetchone()[0]
+		cursor.execute("select name from countries where rowid = ?", (str(country_id),))
+		to_print += ", country: " + cursor.fetchone()[0]
+
+		cursor.execute("select reid from cheese_recipes where chid = ?", (str(cid[0]),))
+		recipe_ids = cursor.fetchall()
+		to_print += ", recipes: "
+
+		for recipe in recipe_ids:
+			cursor.execute("select name from recipes where rowid = ?", (str(recipe[0]),))
+			to_print += cursor.fetchone()[0] + ", "
+
+	print to_print
 
 if db_exists('db/database'):
 	db = sqlite3.connect('db/database')
@@ -119,6 +221,8 @@ re2 = table_objects.recipe(None, "Gouda spaghetti",
 	"mix it in", "15 min")
 re3 = table_objects.recipe(None, "Brie cake",
 	"bake it", "2 hours")
+re4 = table_objects.recipe(None, "Brie cake 2",
+	"bake it 2", "4 hours")
 
 print(ch1.get_id())
 print(ch2.get_id())
@@ -147,14 +251,17 @@ print(co3.get_id())
 print(re1.get_id())
 print(re2.get_id())
 print(re3.get_id())
+print(re4.get_id())
 
 add_recipe_row(db, re1)
 add_recipe_row(db, re2)
 add_recipe_row(db, re3)
+add_recipe_row(db, re4)
 
 print(re1.get_id())
 print(re2.get_id())
 print(re3.get_id())
+print(re4.get_id())
 
 connect_cheese_country(ch1, co1)
 connect_cheese_country(ch2, co2)
@@ -163,21 +270,28 @@ connect_cheese_country(ch3, co3)
 connect_cheese_recipe(ch1, re1)
 connect_cheese_recipe(ch2, re2)
 connect_cheese_recipe(ch3, re3)
+connect_cheese_recipe(ch3, re4)
 
-cursor.execute("Select * from cheeses")
-print(cursor.fetchall())
+cursor.execute("select * from cheeses")
+print cursor.fetchall()
+cursor.execute("select * from countries")
+print cursor.fetchall()
+cursor.execute("select * from recipes")
+print cursor.fetchall()
+cursor.execute("select * from cheese_country")
+print cursor.fetchall()
+cursor.execute("select * from cheese_recipes")
+print cursor.fetchall()
 
-cursor.execute("Select * from countries")
-print(cursor.fetchall())
+search_by_country(db, "Italy")
+search_by_country(db, "Netherlands")
+search_by_country(db, "France")
 
-cursor.execute("Select * from recipes")
-print(cursor.fetchall())
+search_by_recipe(db, "Provoleta crackers")
+search_by_recipe(db, "Gouda spaghetti")
+search_by_recipe(db, "Brie cake")
 
-cursor.execute("Select * from cheese_country")
-print(cursor.fetchall())
-
-cursor.execute("Select * from cheese_recipes")
-print(cursor.fetchall())
+search_by_softness(db, "soft")
 
 db.commit()
 db.close();
