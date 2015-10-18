@@ -174,12 +174,13 @@ def search_by_recipe(db, name):
 
 def search_by_softness(db, softness):
 	cursor = db.cursor()
-	to_print = "cheese: "
+	to_print = ""
 	
 	cursor.execute("select rowid from cheeses where softness = ?", (str(softness),))
 	desired_ids = cursor.fetchall()
 
 	for cid in desired_ids:
+		to_print += "cheese: "
 	
 		cursor.execute("select name from cheeses where rowid = ?", (str(cid[0]),))
 		to_print += cursor.fetchone()[0]
@@ -197,7 +198,42 @@ def search_by_softness(db, softness):
 			cursor.execute("select name from recipes where rowid = ?", (str(recipe[0]),))
 			to_print += cursor.fetchone()[0] + ", "
 
+		to_print = to_print[:-2]
+		to_print += "\n"
+
 	print to_print
+
+def search_by_name(db, name):
+	cursor = db.cursor()
+	to_print = ""
+	
+	cursor.execute("select rowid from cheeses where name = ?", (str(name),))
+	desired_ids = cursor.fetchall()
+
+	for cid in desired_ids:
+		to_print += "softness: "
+	
+		cursor.execute("select softness from cheeses where rowid = ?", (str(cid[0]),))
+		to_print += cursor.fetchone()[0]
+
+		cursor.execute("select coid from cheese_country where chid = ?", (str(cid[0]),))
+		country_id = cursor.fetchone()[0]
+		cursor.execute("select name from countries where rowid = ?", (str(country_id),))
+		to_print += ", country: " + cursor.fetchone()[0]
+
+		cursor.execute("select reid from cheese_recipes where chid = ?", (str(cid[0]),))
+		recipe_ids = cursor.fetchall()
+		to_print += ", recipes: "
+
+		for recipe in recipe_ids:
+			cursor.execute("select name from recipes where rowid = ?", (str(recipe[0]),))
+			to_print += cursor.fetchone()[0] + ", "
+
+		to_print = to_print[:-2]
+		to_print += "\n"
+
+	print to_print
+
 
 if db_exists('db/database'):
 	db = sqlite3.connect('db/database')
@@ -292,6 +328,7 @@ search_by_recipe(db, "Gouda spaghetti")
 search_by_recipe(db, "Brie cake")
 
 search_by_softness(db, "soft")
+search_by_name(db, "Brie")
 
 db.commit()
 db.close();
