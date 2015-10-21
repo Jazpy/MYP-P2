@@ -10,7 +10,7 @@ def main():
 		cursor = db.cursor()
 	else:
 		db = sqlite3.connect("db/database")
-		create_db(db)
+		db_func.create_db(db)
 		cursor = db.cursor()
 
 	root = tk.Tk()

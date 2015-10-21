@@ -34,7 +34,7 @@ def db_exists(filename):
 
 	return header[:16] == 'SQLite format 3\x00'
 
-def connect_cheese_country(cheese, country):
+def connect_cheese_country(db, cheese, country):
 	cursor = db.cursor()
 
 	cursor.execute("select * from cheese_country where chid = ? and coid = ?",
@@ -46,7 +46,7 @@ def connect_cheese_country(cheese, country):
 	cursor.execute('insert into cheese_country values (? ,?)',
 		(cheese.get_id(), country.get_id()))
 
-def connect_cheese_recipe(cheese, recipe):
+def connect_cheese_recipe(db, cheese, recipe):
 	cursor = db.cursor()
 
 	cursor.execute("select * from cheese_recipes where chid = ? and reid = ?",
