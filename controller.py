@@ -149,9 +149,9 @@ class controller(tk.Frame):
 		self.pack()
 
 	def db_add_cheese(self, event):
-		cheese_name = self.area1.get("1.0", 'end-1c').lower()
-		country_name = self.area2.get("1.0", 'end-1c').lower()
-		softness = self.area3.get("1.0", 'end-1c').lower()
+		cheese_name = self.area1.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
+		country_name = self.area2.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
+		softness = self.area3.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
 
 		cheese_to_add = None
 		country_to_add = None
@@ -250,10 +250,10 @@ class controller(tk.Frame):
 		self.pack()
 
 	def db_add_recipe(self, event):
-		cheese_name = self.area1.get("1.0", 'end-1c').lower()
-		recipe_name = self.area2.get("1.0", 'end-1c').lower()
-		time = self.area3.get("1.0", 'end-1c').lower()
-		instructions = self.area4.get("1.0", 'end-1c').lower()
+		cheese_name = self.area1.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
+		recipe_name = self.area2.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
+		time = self.area3.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
+		instructions = self.area4.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
 
 		self.columnconfigure(0, pad = 3, weight = 1)
 		self.rowconfigure(0, pad = 3, weight = 1)
@@ -383,7 +383,7 @@ class controller(tk.Frame):
 		self.pack()
 
 	def db_del_cheese(self, event):
-		cheese_name = self.area1.get("1.0", 'end-1c').lower()
+		cheese_name = self.area1.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
 
 		cheese_to_add = None
 
@@ -474,7 +474,7 @@ class controller(tk.Frame):
 		self.pack()
 
 	def db_del_recipe(self, event):
-		recipe_name = self.area1.get("1.0", 'end-1c').lower()
+		recipe_name = self.area1.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
 
 		recipe_to_add = None
 
