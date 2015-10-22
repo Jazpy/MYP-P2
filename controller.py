@@ -881,6 +881,7 @@ class controller(tk.Frame):
 		ilabel = tk.Label(self, text = instructions,
 			font = ("Arial", 12), bg = "white",
 			anchor = tk.W, justify = tk.LEFT)
+		ilabel.configure(wraplength = self.winfo_width() - 3)
 		ilabel.grid(row = 2, column = 0)
 
 
