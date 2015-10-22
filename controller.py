@@ -17,6 +17,7 @@ class controller(tk.Frame):
 		self.area2 = None
 		self.area3 = None
 		self.area4 = None
+		self.listbox = None
 
 		self.main_menu("")
 
@@ -32,6 +33,7 @@ class controller(tk.Frame):
 		self.area2 = None
 		self.area3 = None
 		self.area4 = None
+		self.listbox = None
 
 	def main_menu(self, event):
 		self.clean()
@@ -316,7 +318,376 @@ class controller(tk.Frame):
 		self.pack()
 
 	def delete_menu(self, event):
-		print "del"
+		self.clean()
+
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(1, pad = 3, weight = 1)
+		self.rowconfigure(2, pad = 3, weight = 1)
+
+		cheese = ttk.Button(self, text = "Delete cheese",
+			style = "Slate.TButton")
+		cheese.grid(row = 0, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+        	recipe = ttk.Button(self, text = "Delete recipe",
+			style = "Slate.TButton")
+        	recipe.grid(row = 1, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+		back = ttk.Button(self, text = "Back",
+			style = "Slate.TButton")
+        	back.grid(row = 2, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		cheese.bind("<1>", self.del_cheese)
+		recipe.bind("<1>", self.del_recipe)
+		back.bind("<1>", self.main_menu)
+
+		self.pack()
+
+	def del_cheese(self, event):
+		self.clean()
+
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(0, pad = 3, weight = 0)
+		self.rowconfigure(1, pad = 3, weight = 1)
+
+		clabel = tk.Label(self, text = "Name:", font = ("Arial", 16),
+			bg = "white")
+		clabel.grid(row = 0, column = 0)
+		self.area1 = tk.Text(self)
+		self.area1.grid(row = 1, column = 0, columnspan = 1,
+			rowspan = 1)
+
+		delb = ttk.Button(self, text = "Delete",
+			style = "Slate.TButton")
+		delb.grid(row = 6, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		back = ttk.Button(self, text = "Back", style = "Slate.TButton")
+		back.grid(row = 7, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		back.bind("<1>", self.delete_menu)
+		delb.bind("<1>", self.db_del_cheese)
+
+		self.pack()
+
+	def db_del_cheese(self, event):
+		cheese_name = self.area1.get("1.0", 'end-1c').lower()
+
+		cheese_to_add = None
+
+		if (cheese_name == "" or
+			row_exists(self.db, cheese_name, "cheeses") is False):
+			self.clean()
+
+			self.columnconfigure(0, pad = 3, weight = 1)
+			self.rowconfigure(0, pad = 3, weight = 1)
+			self.rowconfigure(1, pad = 3, weight = 1)
+
+			label = tk.Label(self, text =
+				"Error: Cheese not found",
+				font = ("Arial", 20), bg = "white")
+			label.grid(row = 0, column = 0)
+	
+			back = ttk.Button(self, text = "Back",
+				style = "Slate.TButton")
+			back.grid(row = 1, column = 0,
+				sticky = tk.N + tk.S + tk.E + tk.W)
+
+			back.bind("<1>", self.main_menu)
+
+		else:
+			cursor = self.db.cursor()
+			cursor.execute("select rowid from cheeses where name = ?",
+				(str(cheese_name),))
+		
+			chid = cursor.fetchone()[0]
+
+			cursor.execute("select softness from cheeses where name = ?",
+				(str(cheese_name),))
+		
+			softness = cursor.fetchone()[0]
+
+			cheese_to_del = table_objects.cheese(chid,
+				cheese_name, softness)
+
+			db_func.del_cheese_row(self.db, cheese_to_del)
+
+			self.columnconfigure(0, pad = 3, weight = 1)
+			self.rowconfigure(0, pad = 3, weight = 1)
+			self.rowconfigure(1, pad = 3, weight = 1)
+
+			label = tk.Label(self, text = "Success!",
+				font = ("Arial", 20), bg = "white")
+			label.grid(row = 0, column = 0)
+	
+			back = ttk.Button(self, text = "Back",
+				style = "Slate.TButton")
+			back.grid(row = 1, column = 0,
+				sticky = tk.N + tk.S + tk.E + tk.W)
+	
+			back.bind("<1>", self.main_menu)
+	
+		self.pack()
+
+	def del_recipe(self, event):
+		self.clean()
+
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(0, pad = 3, weight = 0)
+		self.rowconfigure(1, pad = 3, weight = 1)
+
+		clabel = tk.Label(self, text = "Recipe name:",
+			font = ("Arial", 16), bg = "white")
+		clabel.grid(row = 0, column = 0)
+		self.area1 = tk.Text(self)
+		self.area1.grid(row = 1, column = 0, columnspan = 1,
+			rowspan = 1)
+
+		delb = ttk.Button(self, text = "Delete", style = "Slate.TButton")
+		delb.grid(row = 8, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+		
+		back = ttk.Button(self, text = "Back", style = "Slate.TButton")
+		back.grid(row = 9, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		back.bind("<1>", self.delete_menu)
+		delb.bind("<1>", self.db_del_recipe)
+
+		self.pack()
+
+	def db_del_recipe(self, event):
+		recipe_name = self.area1.get("1.0", 'end-1c').lower()
+
+		recipe_to_add = None
+
+		if (recipe_name == "" or
+			row_exists(self.db, recipe_name, "recipes") is False):
+			self.clean()
+
+			self.columnconfigure(0, pad = 3, weight = 1)
+			self.rowconfigure(0, pad = 3, weight = 1)
+			self.rowconfigure(1, pad = 3, weight = 1)
+
+			label = tk.Label(self, text =
+				"Error: Recipe not found",
+				font = ("Arial", 20), bg = "white")
+			label.grid(row = 0, column = 0)
+	
+			back = ttk.Button(self, text = "Back",
+				style = "Slate.TButton")
+			back.grid(row = 1, column = 0,
+				sticky = tk.N + tk.S + tk.E + tk.W)
+
+			back.bind("<1>", self.main_menu)
+
+		else:
+			cursor = self.db.cursor()
+			cursor.execute("select rowid from recipes where name = ?",
+				(str(recipe_name),))
+		
+			reid = cursor.fetchone()[0]
+
+			recipe_to_del = table_objects.recipe(reid,
+				recipe_name, "notimportant", "notimportant")
+
+			db_func.del_recipe_row(self.db, recipe_to_del)
+
+			self.columnconfigure(0, pad = 3, weight = 1)
+			self.rowconfigure(0, pad = 3, weight = 1)
+			self.rowconfigure(1, pad = 3, weight = 1)
+
+			label = tk.Label(self, text = "Success!",
+				font = ("Arial", 20), bg = "white")
+			label.grid(row = 0, column = 0)
+	
+			back = ttk.Button(self, text = "Back",
+				style = "Slate.TButton")
+			back.grid(row = 1, column = 0,
+				sticky = tk.N + tk.S + tk.E + tk.W)
+	
+			back.bind("<1>", self.main_menu)
+	
+		self.pack()
 
 	def search_menu(self, event):
-		print "sea"
+		self.clean()
+
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(1, pad = 3, weight = 1)
+		self.rowconfigure(2, pad = 3, weight = 1)
+		self.rowconfigure(3, pad = 3, weight = 1)
+
+		softness = ttk.Button(self, text = "Search cheese by softness",
+			style = "Slate.TButton")
+		softness.grid(row = 0, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+        	country = ttk.Button(self, text = "Search cheese by country",
+			style = "Slate.TButton")
+        	country.grid(row = 1, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+		recipe = ttk.Button(self, text = "Search recipe by cheese",
+			style = "Slate.TButton")
+        	recipe.grid(row = 2, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+		back = ttk.Button(self, text = "Back",
+			style = "Slate.TButton")
+        	back.grid(row = 3, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		softness.bind("<1>", self.search_softness)
+		country.bind("<1>", self.search_country)
+		recipe.bind("<1>", self.search_recipe)
+		back.bind("<1>", self.main_menu)
+
+		self.pack()
+
+	def search_softness(self, event):
+		self.clean()
+	
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.columnconfigure(1, pad = 3, weight = 0)
+		self.rowconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(1, pad = 3, weight = 1)
+		self.rowconfigure(2, pad = 3, weight = 1)
+
+		scrollbar = tk.Scrollbar(self)
+		self.listbox = tk.Listbox(self, yscrollcommand = scrollbar.set)
+
+		cursor = self.db.cursor()
+		cursor.execute("select softness from cheeses")
+		softnesses = cursor.fetchall()
+		softnesses = sorted(set(softnesses))
+
+		for s in softnesses:
+			self.listbox.insert(tk.END, str(s[0]))		
+
+		scrollbar.config(command = self.listbox.yview)	
+
+		self.listbox.grid(row = 0, column = 0, sticky = tk.E + tk.W)
+		scrollbar.grid(row = 0, column = 1, sticky = tk.N + tk.S)
+		search = ttk.Button(self, text = "Search",
+			style = "Slate.TButton")
+        	search.grid(row = 1, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+		back = ttk.Button(self, text = "Back",
+			style = "Slate.TButton")
+        	back.grid(row = 2, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		search.bind("<1>", self.show_search_softness)
+		back.bind("<1>", self.search_menu)
+
+		self.pack()
+
+	def show_search_softness(self, event):
+		sel_soft = self.listbox.get(tk.ACTIVE)
+		
+		self.clean()
+	
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.columnconfigure(1, pad = 3, weight = 0)
+		self.rowconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(1, pad = 3, weight = 1)
+
+		scrollbar = tk.Scrollbar(self)
+		self.listbox = tk.Listbox(self, yscrollcommand = scrollbar.set)
+
+		cursor = self.db.cursor()
+		cursor.execute("select name from cheeses where softness = ?",
+			(str(sel_soft),))
+		cheeses = cursor.fetchall()
+		cheeses = sorted(set(cheeses))
+
+		for s in cheeses:
+			self.listbox.insert(tk.END, str(s[0]))		
+
+		scrollbar.config(command = self.listbox.yview)	
+
+		self.listbox.grid(row = 0, column = 0, sticky = tk.E + tk.W)
+		scrollbar.grid(row = 0, column = 1, sticky = tk.N + tk.S)
+		back = ttk.Button(self, text = "Back",
+			style = "Slate.TButton")
+        	back.grid(row = 1, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		back.bind("<1>", self.main_menu)
+
+		self.pack()
+
+	def search_country(self, event):
+		self.clean()
+	
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.columnconfigure(1, pad = 3, weight = 0)
+		self.rowconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(1, pad = 3, weight = 1)
+		self.rowconfigure(2, pad = 3, weight = 1)
+
+		scrollbar = tk.Scrollbar(self)
+		self.listbox = tk.Listbox(self, yscrollcommand = scrollbar.set)
+
+		cursor = self.db.cursor()
+		cursor.execute("select name from countries")
+		countries = cursor.fetchall()
+		countries = sorted(set(countries))
+
+		for s in countries:
+			self.listbox.insert(tk.END, str(s[0]))		
+
+		scrollbar.config(command = self.listbox.yview)	
+
+		self.listbox.grid(row = 0, column = 0, sticky = tk.E + tk.W)
+		scrollbar.grid(row = 0, column = 1, sticky = tk.N + tk.S)
+		search = ttk.Button(self, text = "Search",
+			style = "Slate.TButton")
+        	search.grid(row = 1, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+		back = ttk.Button(self, text = "Back",
+			style = "Slate.TButton")
+        	back.grid(row = 2, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		search.bind("<1>", self.show_search_country)
+		back.bind("<1>", self.search_menu)
+
+		self.pack()
+

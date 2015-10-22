@@ -77,6 +77,26 @@ def add_cheese_row(db, cheese):
 
 def del_cheese_row(db, cheese_to_del):
 	cursor = db.cursor()
+
+	cursor.execute("select coid from cheese_country where chid = ?",
+		(str(cheese_to_del.get_id()),))
+
+	coid = cursor.fetchone()
+	cursor.execute("select chid from cheese_country where coid = ?",
+		(str(coid),))
+
+	if len(cursor.fetchall()) == 1:
+		cursor.execute("delete from countries where rowid = ?",
+			(str(coid),))
+
+	cursor.execute("select reid from cheese_country where chid = ?",
+		(str(cheese_to_del.get_id()),))
+
+	recipes = cursor.fetchall()
+
+	for row in recipes:
+		cursor.execute("delete from recipes where rowid = ?",
+			(str(row[0]),))
 	
 	cursor.execute("delete from cheeses where name = ?",
 		(str(cheese_to_del.get_name()),))
@@ -86,6 +106,7 @@ def del_cheese_row(db, cheese_to_del):
 
 	cursor.execute("delete from cheese_recipes where chid = ?",
 		(cheese_to_del.get_id(),))
+	
 
 def add_country_row(db, country):
 	cursor = db.cursor()
