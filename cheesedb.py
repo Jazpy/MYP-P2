@@ -18,7 +18,7 @@ def main():
 	app = controller(root, db)
 	root.mainloop()
 	
-	print len(cursor.execute("select rowid from countries").fetchall())
+	print len(cursor.execute("select rowid from recipes").fetchall())
 
 	db.commit()
 	db.close();
