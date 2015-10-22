@@ -1,0 +1,87 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module db_func</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>db_func</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/jaz/Documents/MYP/MYP-P2/db_func.py">/home/jaz/Documents/MYP/MYP-P2/db_func.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="sqlite3.html">sqlite3</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-add_cheese_row"><strong>add_cheese_row</strong></a>(db, cheese)</dt><dd><tt>Adds&nbsp;cheese&nbsp;row<br>
+&nbsp;<br>
+:param&nbsp;db:&nbsp;database&nbsp;to&nbsp;use<br>
+:param&nbsp;cheese:&nbsp;cheese&nbsp;to&nbsp;add<br>
+:return:&nbsp;returns&nbsp;nothing</tt></dd></dl>
+ <dl><dt><a name="-add_country_row"><strong>add_country_row</strong></a>(db, country)</dt><dd><tt>Adds&nbsp;country&nbsp;row<br>
+&nbsp;<br>
+:param&nbsp;db:&nbsp;database&nbsp;to&nbsp;use<br>
+:param&nbsp;country:&nbsp;country&nbsp;to&nbsp;add<br>
+:return:&nbsp;returns&nbsp;nothing</tt></dd></dl>
+ <dl><dt><a name="-add_recipe_row"><strong>add_recipe_row</strong></a>(db, recipe)</dt><dd><tt>Adds&nbsp;recipe&nbsp;row<br>
+&nbsp;<br>
+:param&nbsp;db:&nbsp;database&nbsp;to&nbsp;use<br>
+:param&nbsp;recipe:&nbsp;recipe&nbsp;to&nbsp;add<br>
+:return:&nbsp;returns&nbsp;nothing</tt></dd></dl>
+ <dl><dt><a name="-connect_cheese_country"><strong>connect_cheese_country</strong></a>(db, cheese, country)</dt><dd><tt>Connects&nbsp;cheese&nbsp;to&nbsp;country&nbsp;in&nbsp;relation&nbsp;table<br>
+&nbsp;<br>
+:param&nbsp;db:&nbsp;database&nbsp;to&nbsp;use<br>
+:param&nbsp;cheese:&nbsp;cheese&nbsp;to&nbsp;connect<br>
+:param&nbsp;country:&nbsp;country&nbsp;to&nbsp;connect<br>
+:return:&nbsp;returns&nbsp;nothing</tt></dd></dl>
+ <dl><dt><a name="-connect_cheese_recipe"><strong>connect_cheese_recipe</strong></a>(db, cheese, recipe)</dt><dd><tt>Connects&nbsp;cheese&nbsp;to&nbsp;recipe&nbsp;in&nbsp;relation&nbsp;table<br>
+&nbsp;<br>
+:param&nbsp;db:&nbsp;database&nbsp;to&nbsp;use<br>
+:param&nbsp;cheese:&nbsp;cheese&nbsp;to&nbsp;connect<br>
+:param&nbsp;recipe:&nbsp;recipe&nbsp;to&nbsp;connect<br>
+:return:&nbsp;returns&nbsp;nothing</tt></dd></dl>
+ <dl><dt><a name="-create_db"><strong>create_db</strong></a>(db)</dt><dd><tt>Creates&nbsp;tables&nbsp;in&nbsp;database<br>
+&nbsp;<br>
+:param&nbsp;db:&nbsp;database&nbsp;to&nbsp;fill<br>
+:return:&nbsp;returns&nbsp;nothing</tt></dd></dl>
+ <dl><dt><a name="-db_exists"><strong>db_exists</strong></a>(filename)</dt><dd><tt>Checks&nbsp;if&nbsp;database&nbsp;exists<br>
+&nbsp;<br>
+:param&nbsp;filename:&nbsp;filename&nbsp;of&nbsp;database&nbsp;to&nbsp;check<br>
+:return:&nbsp;returns&nbsp;True&nbsp;if&nbsp;database&nbsp;exists&nbsp;and&nbsp;is&nbsp;sqlite3&nbsp;database,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false&nbsp;otherwise</tt></dd></dl>
+ <dl><dt><a name="-del_cheese_row"><strong>del_cheese_row</strong></a>(db, cheese_to_del)</dt><dd><tt>Deletes&nbsp;cheese&nbsp;row<br>
+&nbsp;<br>
+:param&nbsp;db:&nbsp;database&nbsp;to&nbsp;use<br>
+:param&nbsp;cheese_to_del:&nbsp;cheese&nbsp;to&nbsp;delete<br>
+:return:&nbsp;returns&nbsp;nothing</tt></dd></dl>
+ <dl><dt><a name="-del_country_row"><strong>del_country_row</strong></a>(db, country_to_del)</dt><dd><tt>Deletes&nbsp;country&nbsp;row<br>
+&nbsp;<br>
+:param&nbsp;db:&nbsp;database&nbsp;to&nbsp;use<br>
+:param&nbsp;country_to_del:&nbsp;country&nbsp;to&nbsp;delete<br>
+:return:&nbsp;returns&nbsp;nothing</tt></dd></dl>
+ <dl><dt><a name="-del_recipe_row"><strong>del_recipe_row</strong></a>(db, recipe_to_del)</dt><dd><tt>Deletes&nbsp;recipe&nbsp;row<br>
+&nbsp;<br>
+:param&nbsp;db:&nbsp;database&nbsp;to&nbsp;use<br>
+:param&nbsp;recipe_to_del:&nbsp;recipe&nbsp;to&nbsp;delete<br>
+:return:&nbsp;returns&nbsp;nothing</tt></dd></dl>
+ <dl><dt><a name="-row_exists"><strong>row_exists</strong></a>(db, name, table)</dt><dd><tt>Checks&nbsp;if&nbsp;row&nbsp;exists<br>
+&nbsp;<br>
+:param&nbsp;db:&nbsp;database&nbsp;to&nbsp;use<br>
+:param&nbsp;name:&nbsp;name&nbsp;to&nbsp;check<br>
+:param&nbsp;table:&nbsp;tabletabase&nbsp;to&nbsp;use<br>
+:return:&nbsp;returns&nbsp;nothing</tt></dd></dl>
+</td></tr></table>
+</body></html>

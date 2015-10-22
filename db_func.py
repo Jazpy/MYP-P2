@@ -1,6 +1,17 @@
 import sqlite3
 
+"""
+This module handles sqlite3 commands
+"""
+
 def create_db(db):
+	"""
+	Creates tables in database
+
+	:param db: database to fill
+	:return: returns nothing
+	"""
+
 	cursor = db.cursor()
 	cursor.execute('CREATE TABLE cheeses(name TEXT, softness TEXT)')
 	cursor.execute('CREATE TABLE countries(name TEXT)')
@@ -11,6 +22,15 @@ def create_db(db):
 	db.commit();
 
 def row_exists(db, name, table):
+	"""
+	Checks if row exists
+
+	:param db: database to use
+	:param name: name to check
+	:param table: tabletabase to use
+	:return: returns nothing
+	"""
+	
 	cursor = db.cursor()
 	cursor.execute("select rowid from %s where name = ?" %(str(table)), (str(name),))
 
@@ -22,6 +42,14 @@ def row_exists(db, name, table):
 	return True
 
 def db_exists(filename):
+	"""
+	Checks if database exists
+
+	:param filename: filename of database to check
+	:return: returns True if database exists and is sqlite3 database,
+		false otherwise
+	"""
+	
 	from os.path import isfile, getsize
 
 	if not isfile(filename):
@@ -35,6 +63,14 @@ def db_exists(filename):
 	return header[:16] == 'SQLite format 3\x00'
 
 def connect_cheese_country(db, cheese, country):
+	"""
+	Connects cheese to country in relation table
+
+	:param db: database to use
+	:param cheese: cheese to connect
+	:param country: country to connect
+	:return: returns nothing
+	"""	
 	cursor = db.cursor()
 
 	cursor.execute("select * from cheese_country where chid = ? and coid = ?",
@@ -47,6 +83,15 @@ def connect_cheese_country(db, cheese, country):
 		(cheese.get_id(), country.get_id()))
 
 def connect_cheese_recipe(db, cheese, recipe):
+	"""
+	Connects cheese to recipe in relation table
+
+	:param db: database to use
+	:param cheese: cheese to connect
+	:param recipe: recipe to connect
+	:return: returns nothing
+	"""
+	
 	cursor = db.cursor()
 
 	cursor.execute("select * from cheese_recipes where chid = ? and reid = ?",
@@ -59,6 +104,13 @@ def connect_cheese_recipe(db, cheese, recipe):
 		(cheese.get_id(), recipe.get_id()))
 
 def add_cheese_row(db, cheese):
+	"""
+	Adds cheese row
+
+	:param db: database to use
+	:param cheese: cheese to add
+	:return: returns nothing
+	"""		
 	cursor = db.cursor()
 	
 	if row_exists(db, cheese.get_name(), "cheeses") is True:
@@ -76,6 +128,13 @@ def add_cheese_row(db, cheese):
 	cheese.set_id(cursor.lastrowid)
 
 def del_cheese_row(db, cheese_to_del):
+	"""
+	Deletes cheese row
+
+	:param db: database to use
+	:param cheese_to_del: cheese to delete
+	:return: returns nothing
+	"""	
 	cursor = db.cursor()
 
 	cursor.execute("select coid from cheese_country where chid = ?",
@@ -109,6 +168,14 @@ def del_cheese_row(db, cheese_to_del):
 	
 
 def add_country_row(db, country):
+	"""
+	Adds country row
+
+	:param db: database to use
+	:param country: country to add
+	:return: returns nothing
+	"""
+	
 	cursor = db.cursor()
 	
 	if row_exists(db, country.get_name(), "countries") is True:
@@ -125,6 +192,14 @@ def add_country_row(db, country):
 	country.set_id(cursor.lastrowid)
 
 def del_country_row(db, country_to_del):
+	"""
+	Deletes country row
+
+	:param db: database to use
+	:param country_to_del: country to delete
+	:return: returns nothing
+	"""
+	
 	cursor = db.cursor()
 
 	cursor.execute("delete from countries where name = ",
@@ -133,6 +208,13 @@ def del_country_row(db, country_to_del):
 		(country_to_del.get_id(),))
 
 def add_recipe_row(db, recipe):
+	"""
+	Adds recipe row
+
+	:param db: database to use
+	:param recipe: recipe to add
+	:return: returns nothing
+	"""	
 	cursor = db.cursor()
 	
 	if row_exists(db, recipe.get_name(), "recipes") is True:
@@ -150,6 +232,14 @@ def add_recipe_row(db, recipe):
 	recipe.set_id(cursor.lastrowid)
 
 def del_recipe_row(db, recipe_to_del):
+	"""
+	Deletes recipe row
+
+	:param db: database to use
+	:param recipe_to_del: recipe to delete
+	:return: returns nothing
+	"""
+	
 	cursor = db.cursor()
 
 	cursor.execute("delete from recipes where name = ?",
@@ -157,101 +247,3 @@ def del_recipe_row(db, recipe_to_del):
 
 	cursor.execute("delete from cheese_recipes where reid = ?",
 		(recipe_to_del.get_id(),))
-
-def search_by_country(db, name):
-	cursor = db.cursor()
-	
-	cursor.execute("select rowid from countries where name = ?", (str(name),))
-	desired_id = cursor.fetchone()[0]
-
-	cursor.execute("select chid from cheese_country where coid = ?", (str(desired_id),))
-	rows = cursor.fetchall()
-
-	print desired_id
-	for row in rows:
-		cursor.execute("select name,softness from cheeses where rowid = ?", (str(row[0]),))
-		selected_cheeses = cursor.fetchall()
-
-		for c in selected_cheeses:
-			print c[0], c[1]
-
-def search_by_recipe(db, name):
-	cursor = db.cursor()
-	
-	cursor.execute("select rowid from recipes where name = ?", (str(name),))
-	desired_id = cursor.fetchone()[0]
-
-	cursor.execute("select chid from cheese_recipes where reid = ?", (str(desired_id),))
-	rows = cursor.fetchall()
-
-	print desired_id
-	for row in rows:
-		cursor.execute("select name,softness from cheeses where rowid = ?", (str(row[0]),))
-		selected_cheeses = cursor.fetchall()
-
-		for c in selected_cheeses:
-			print c[0], c[1]
-
-def search_by_softness(db, softness):
-	cursor = db.cursor()
-	to_print = ""
-	
-	cursor.execute("select rowid from cheeses where softness = ?", (str(softness),))
-	desired_ids = cursor.fetchall()
-
-	for cid in desired_ids:
-		to_print += "cheese: "
-	
-		cursor.execute("select name from cheeses where rowid = ?", (str(cid[0]),))
-		to_print += cursor.fetchone()[0]
-
-		cursor.execute("select coid from cheese_country where chid = ?", (str(cid[0]),))
-		country_id = cursor.fetchone()[0]
-		cursor.execute("select name from countries where rowid = ?", (str(country_id),))
-		to_print += ", country: " + cursor.fetchone()[0]
-
-		cursor.execute("select reid from cheese_recipes where chid = ?", (str(cid[0]),))
-		recipe_ids = cursor.fetchall()
-		to_print += ", recipes: "
-
-		for recipe in recipe_ids:
-			cursor.execute("select name from recipes where rowid = ?", (str(recipe[0]),))
-			to_print += cursor.fetchone()[0] + ", "
-
-		to_print = to_print[:-2]
-		to_print += "\n"
-
-	print to_print
-
-def search_by_name(db, name):
-	cursor = db.cursor()
-	to_print = ""
-	
-	cursor.execute("select rowid from cheeses where name = ?", (str(name),))
-	desired_ids = cursor.fetchall()
-
-	for cid in desired_ids:
-		to_print += "softness: "
-	
-		cursor.execute("select softness from cheeses where rowid = ?", (str(cid[0]),))
-		to_print += cursor.fetchone()[0]
-
-		cursor.execute("select coid from cheese_country where chid = ?", (str(cid[0]),))
-		country_id = cursor.fetchone()[0]
-		cursor.execute("select name from countries where rowid = ?", (str(country_id),))
-		to_print += ", country: " + cursor.fetchone()[0]
-
-		cursor.execute("select reid from cheese_recipes where chid = ?", (str(cid[0]),))
-		recipe_ids = cursor.fetchall()
-		to_print += ", recipes: "
-
-		for recipe in recipe_ids:
-			cursor.execute("select name from recipes where rowid = ?", (str(recipe[0]),))
-			to_print += cursor.fetchone()[0] + ", "
-
-		to_print = to_print[:-2]
-		to_print += "\n"
-
-	print to_print
-
-

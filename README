@@ -1,0 +1,30 @@
+Installation:
+
+You will need the following python libraries:
+	-sqlite3
+	-Tkinter
+	-python
+
+They can be installed on Ubuntu with these commands:
+	sudo apt-get install sqlite3 libsqlite3-dev
+	sudo apt-get install python-tk
+	sudo apt-get install python
+
+###########################################################
+
+To run the app, just type in:
+	python cheesedb.py
+
+###########################################################
+
+To run the unit tests, just type in:
+	python test_cheesedb.py
+
+###########################################################
+
+To check the documentation, go to the "docs" folder.
+
+To create the documentation, type in:
+	pydoc "name of module you want" (note that I did not type in ".py", just the name of the module)
+
+###########################################################

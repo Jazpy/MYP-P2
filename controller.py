@@ -4,9 +4,22 @@ import textwrap
 import db_func
 import table_objects
 
+"""
+This module manages the connection between database and GUI,
+it is the controller of the MVC programming pattern
+"""
+
 class controller(tk.Frame):
 
 	def __init__(self, parent, db):
+		"""
+		Construct new 'controller' object
+		
+		:param parent: the view's parent
+		:param db: database to connecto to
+		:return: returns nothing
+		"""
+
 		tk.Frame.__init__(self, parent, background = "white")
 		
 		self.parent = parent
@@ -22,10 +35,21 @@ class controller(tk.Frame):
 		self.main_menu("")
 
 	def init_ui(self):
+		"""
+		Create app window
+
+		:return: returns nothing
+		"""
+
 		self.parent.title("RECIPINATOR")
 		self.pack(fill = tk.BOTH, expand = 1)
 
 	def clean(self):
+		"""
+		Clean app window
+
+		:return: returns nothing
+		"""
 		for widget in self.winfo_children():
 			widget.destroy()
 
@@ -36,6 +60,11 @@ class controller(tk.Frame):
 		self.listbox = None
 
 	def main_menu(self, event):
+		"""
+		Creates app's main menu
+
+		:return: returns nothing
+		"""
 		self.clean()
 
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -65,6 +94,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def add_menu(self, event):
+		"""
+		Shows user adding options
+
+		:return: returns nothing
+		"""
 		self.clean()
 
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -97,6 +131,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def add_cheese(self, event):
+		"""
+		Asks user for new cheese's information
+
+		:return: returns nothing
+		"""
 		self.clean()
 
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -149,6 +188,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def db_add_cheese(self, event):
+		"""
+		Handles adding cheese to database
+
+		:return: returns nothing
+		"""
 		cheese_name = self.area1.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
 		country_name = self.area2.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
 		softness = self.area3.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
@@ -188,6 +232,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def add_recipe(self, event):
+		"""
+		Asks user for recipe information
+
+		:return: returns nothing
+		"""
 		self.clean()
 
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -250,6 +299,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def db_add_recipe(self, event):
+		"""
+		Handles adding recipe to the database		
+
+		:return: returns nothing
+		"""
 		cheese_name = self.area1.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
 		recipe_name = self.area2.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
 		time = self.area3.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
@@ -318,6 +372,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def delete_menu(self, event):
+		"""
+		Shows user deletion options
+
+		:return: returns nothing
+		"""
 		self.clean()
 
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -350,6 +409,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def del_cheese(self, event):
+		"""
+		Asks for name of cheese to delete
+
+		:return: returns nothing
+		"""
 		self.clean()
 
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -383,6 +447,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def db_del_cheese(self, event):
+		"""
+		Handles deleting country from the database
+
+		:return: returns nothing
+		"""
 		cheese_name = self.area1.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
 
 		cheese_to_add = None
@@ -442,6 +511,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def del_recipe(self, event):
+		"""
+		Asks for name of recipe to delete
+
+		:return: returns nothing
+		"""
 		self.clean()
 
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -474,6 +548,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def db_del_recipe(self, event):
+		"""
+		Handles the deletion of the recipe from the actual databaes
+
+		:return: returns nothing
+		"""
 		recipe_name = self.area1.get("1.0", 'end-1c').lower().encode('ascii', 'ignore')
 
 		recipe_to_add = None
@@ -530,6 +609,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def search_menu(self, event):
+		"""
+		Search menu, user decides what to search for
+
+		:return: returns nothing
+		"""
 		self.clean()
 
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -568,6 +652,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def search_softness(self, event):
+		"""
+		Show softnesses in database
+
+		:return: returns nothing
+		"""
 		self.clean()
 	
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -611,6 +700,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def show_search_softness(self, event):
+		"""
+		Show cheeses with selected softness
+
+		:return: returns nothing
+		"""
 		sel_soft = self.listbox.get(tk.ACTIVE)
 		
 		self.clean()
@@ -651,6 +745,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def search_country(self, event):
+		"""
+		Show countries in database
+
+		:return: returns nothing
+		"""
 		self.clean()
 	
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -694,6 +793,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def show_search_country(self, event):
+		"""
+		Show cheeses associated to selected country
+
+		:return: returns nothing
+		"""
 		sel_country = self.listbox.get(tk.ACTIVE)
 		
 		self.clean()
@@ -746,6 +850,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def search_recipe(self, event):
+		"""
+		Show cheeses with recipes
+
+		:return: returns nothing
+		"""
 		self.clean()
 	
 		ttk.Style().configure("Slate.TButton", padding = 
@@ -789,6 +898,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def show_search_recipe(self, event):
+		"""
+		Show associated recipes
+
+		:return: returns nothing
+		"""
 		sel_cheese = self.listbox.get(tk.ACTIVE)
 		
 		self.clean()
@@ -847,6 +961,11 @@ class controller(tk.Frame):
 		self.pack()
 
 	def show_recipe_details(self, event):
+		"""
+		Show selected recipe's instructions
+
+		:return: returns nothing
+		"""
 		sel_recipe = self.listbox.get(tk.ACTIVE)
 		
 		self.clean()
