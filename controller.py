@@ -644,7 +644,7 @@ class controller(tk.Frame):
         	back.grid(row = 1, column = 0,
 			sticky = tk.N + tk.S + tk.E + tk.W)
 
-		back.bind("<1>", self.main_menu)
+		back.bind("<1>", self.search_menu)
 
 		self.pack()
 
@@ -688,6 +688,208 @@ class controller(tk.Frame):
 
 		search.bind("<1>", self.show_search_country)
 		back.bind("<1>", self.search_menu)
+
+		self.pack()
+
+	def show_search_country(self, event):
+		sel_country = self.listbox.get(tk.ACTIVE)
+		
+		self.clean()
+	
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.columnconfigure(1, pad = 3, weight = 0)
+		self.rowconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(1, pad = 3, weight = 1)
+
+		scrollbar = tk.Scrollbar(self)
+		self.listbox = tk.Listbox(self, yscrollcommand = scrollbar.set)
+
+		cursor = self.db.cursor()
+		cursor.execute("select rowid from countries where name = ?",
+			(str(sel_country),))
+		coid = cursor.fetchone()[0]
+		cursor.execute("select chid from cheese_country where coid = ?",
+			(str(coid),))
+		chids = cursor.fetchall()
+		
+		cheeses = []	
+	
+		for chid in chids:
+			cursor.execute("select name from cheeses where rowid = ?",
+				(str(chid[0]),))
+
+			cheeses.append(cursor.fetchone()[0])
+
+		cheeses = sorted(set(cheeses))
+
+		for s in cheeses:
+			self.listbox.insert(tk.END, str(s))		
+
+		scrollbar.config(command = self.listbox.yview)	
+
+		self.listbox.grid(row = 0, column = 0, sticky = tk.E + tk.W)
+		scrollbar.grid(row = 0, column = 1, sticky = tk.N + tk.S)
+		back = ttk.Button(self, text = "Back",
+			style = "Slate.TButton")
+        	back.grid(row = 1, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		back.bind("<1>", self.search_menu)
+
+		self.pack()
+
+	def search_recipe(self, event):
+		self.clean()
+	
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.columnconfigure(1, pad = 3, weight = 0)
+		self.rowconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(1, pad = 3, weight = 1)
+		self.rowconfigure(2, pad = 3, weight = 1)
+
+		scrollbar = tk.Scrollbar(self)
+		self.listbox = tk.Listbox(self, yscrollcommand = scrollbar.set)
+
+		cursor = self.db.cursor()
+		cursor.execute("select name from cheeses")
+		cheeses = cursor.fetchall()
+		cheeses = sorted(set(cheeses))
+
+		for s in cheeses:
+			self.listbox.insert(tk.END, str(s[0]))		
+
+		scrollbar.config(command = self.listbox.yview)	
+
+		self.listbox.grid(row = 0, column = 0, sticky = tk.E + tk.W)
+		scrollbar.grid(row = 0, column = 1, sticky = tk.N + tk.S)
+		search = ttk.Button(self, text = "Search",
+			style = "Slate.TButton")
+        	search.grid(row = 1, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+		back = ttk.Button(self, text = "Back",
+			style = "Slate.TButton")
+        	back.grid(row = 2, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		search.bind("<1>", self.show_search_recipe)
+		back.bind("<1>", self.search_menu)
+
+		self.pack()
+
+	def show_search_recipe(self, event):
+		sel_cheese = self.listbox.get(tk.ACTIVE)
+		
+		self.clean()
+	
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.columnconfigure(1, pad = 3, weight = 0)
+		self.rowconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(1, pad = 3, weight = 1)
+		self.rowconfigure(2, pad = 3, weight = 1)
+
+		scrollbar = tk.Scrollbar(self)
+		self.listbox = tk.Listbox(self, yscrollcommand = scrollbar.set)
+
+		cursor = self.db.cursor()
+		cursor.execute("select rowid from cheeses where name = ?",
+			(str(sel_cheese),))
+		chid = cursor.fetchone()[0]
+		cursor.execute("select reid from cheese_recipes where chid = ?",
+			(str(chid),))
+		reids = cursor.fetchall()
+		
+		recipes = []	
+	
+		for reid in reids:
+			cursor.execute("select name from recipes where rowid = ?",
+				(str(reid[0]),))
+
+			recipes.append(cursor.fetchone()[0])
+
+		recipes = sorted(set(recipes))
+
+		for s in recipes:
+			self.listbox.insert(tk.END, str(s))		
+
+		scrollbar.config(command = self.listbox.yview)	
+
+		self.listbox.grid(row = 0, column = 0, sticky = tk.E + tk.W)
+		scrollbar.grid(row = 0, column = 1, sticky = tk.N + tk.S)
+		details = ttk.Button(self, text = "Details",
+			style = "Slate.TButton")
+        	details.grid(row = 1, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+		back = ttk.Button(self, text = "Back",
+			style = "Slate.TButton")
+        	back.grid(row = 2, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		details.bind("<1>", self.show_recipe_details)
+		back.bind("<1>", self.search_recipe)
+
+		self.pack()
+
+	def show_recipe_details(self, event):
+		sel_recipe = self.listbox.get(tk.ACTIVE)
+		
+		self.clean()
+	
+		ttk.Style().configure("Slate.TButton", padding = 
+			(0, 5, 0, 5), font = 'Arial 20',
+			# foreground = "#CCCECF", background = "#092E3B")
+			foreground = "black", background = "white")
+
+		self.columnconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(0, pad = 3, weight = 1)
+		self.rowconfigure(1, pad = 3, weight = 1)
+		self.rowconfigure(2, pad = 3, weight = 4)
+		self.rowconfigure(3, pad = 3, weight = 1)
+
+		cursor = self.db.cursor()
+		cursor.execute("select time from recipes where name = ?",
+			(str(sel_recipe),))
+		time = cursor.fetchone()[0]
+
+		cursor.execute("select instructions from " \
+			"recipes where name = ?",
+			(str(sel_recipe),))
+		instructions = cursor.fetchone()[0]
+
+		nlabel = tk.Label(self, text = sel_recipe,
+			font = ("Arial", 16), bg = "white",
+			anchor = tk.W, justify = tk.LEFT)
+		nlabel.grid(row = 0, column = 0)
+		tlabel = tk.Label(self, text = time,
+			font = ("Arial", 12), bg = "white",
+			anchor = tk.W, justify = tk.LEFT)
+		tlabel.grid(row = 1, column = 0)
+		ilabel = tk.Label(self, text = instructions,
+			font = ("Arial", 12), bg = "white",
+			anchor = tk.W, justify = tk.LEFT)
+		ilabel.grid(row = 2, column = 0)
+
+
+		back = ttk.Button(self, text = "Back",
+			style = "Slate.TButton")
+        	back.grid(row = 3, column = 0,
+			sticky = tk.N + tk.S + tk.E + tk.W)
+
+		back.bind("<1>", self.search_recipe)
 
 		self.pack()
 
