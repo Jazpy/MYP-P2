@@ -18,6 +18,8 @@ def main():
 	app = controller(root, db)
 	root.mainloop()
 	
+	print len(cursor.execute("select rowid from countries").fetchall())
+
 	db.commit()
 	db.close();
 

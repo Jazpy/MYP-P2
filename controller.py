@@ -388,7 +388,7 @@ class controller(tk.Frame):
 		cheese_to_add = None
 
 		if (cheese_name == "" or
-			row_exists(self.db, cheese_name, "cheeses") is False):
+			db_func.row_exists(self.db, cheese_name, "cheeses") is False):
 			self.clean()
 
 			self.columnconfigure(0, pad = 3, weight = 1)
@@ -479,7 +479,7 @@ class controller(tk.Frame):
 		recipe_to_add = None
 
 		if (recipe_name == "" or
-			row_exists(self.db, recipe_name, "recipes") is False):
+			db_func.row_exists(self.db, recipe_name, "recipes") is False):
 			self.clean()
 
 			self.columnconfigure(0, pad = 3, weight = 1)
@@ -499,6 +499,8 @@ class controller(tk.Frame):
 			back.bind("<1>", self.main_menu)
 
 		else:
+			self.clean()
+
 			cursor = self.db.cursor()
 			cursor.execute("select rowid from recipes where name = ?",
 				(str(recipe_name),))

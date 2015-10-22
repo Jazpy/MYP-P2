@@ -81,7 +81,7 @@ def del_cheese_row(db, cheese_to_del):
 	cursor.execute("select coid from cheese_country where chid = ?",
 		(str(cheese_to_del.get_id()),))
 
-	coid = cursor.fetchone()
+	coid = cursor.fetchone()[0]
 	cursor.execute("select chid from cheese_country where coid = ?",
 		(str(coid),))
 
@@ -89,7 +89,7 @@ def del_cheese_row(db, cheese_to_del):
 		cursor.execute("delete from countries where rowid = ?",
 			(str(coid),))
 
-	cursor.execute("select reid from cheese_country where chid = ?",
+	cursor.execute("select reid from cheese_recipes where chid = ?",
 		(str(cheese_to_del.get_id()),))
 
 	recipes = cursor.fetchall()
@@ -152,7 +152,7 @@ def add_recipe_row(db, recipe):
 def del_recipe_row(db, recipe_to_del):
 	cursor = db.cursor()
 
-	cursor.execute("delete from recipes where name = ",
+	cursor.execute("delete from recipes where name = ?",
 		(str(recipe_to_del.get_name()),))
 
 	cursor.execute("delete from cheese_recipes where reid = ?",
